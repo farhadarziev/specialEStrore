@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>SGUELECTKG_OFFICIAL</title>
+    <link rel="stylesheet" href="/css/main.css?v=7">
+</head>
+<body>
+
+<!-- ======= ВЕРХНЯЯ СИНЯЯ ПАНЕЛЬ С МЕНЮ ======= -->
+<!-- Здесь находятся ссылки: О компании, Каталог, Мой кабинет + справа поиск, корзина и вход -->
+<div class="top-bar">
+    <!-- Левая часть меню -->
+    <ul class="menu-left">
+        <li><a href="/about.html">О компании</a></li>
+        <li><a href="/catalog.html">Каталог</a></li>
+        <li><a href="/profile.html">Мой кабинет</a></li>
+
+    </ul>
+
+    <!-- Правая часть меню: поиск, корзина, вход -->
+    <div class="menu-right">
+        <input type="text" placeholder="Поиск товаров...">
+        <a href="/catalog/search"><button>🔍</button></a>
+        <a href="/cart.html">🛒 Корзина</a>
+        <a href="/auth.html">Войти / Регистрация</a>
+    </div>
+</div>
+
+<!-- ======= ГЛАВНЫЙ ЗАГОЛОВОК ======= -->
+<!-- Логотип, название компании, телефоны и иконки соцсетей -->
+<header class="main-header">
+    <div class="logo">
+        <!-- TODO: вставь сюда свой логотип с белым фоном -->
+        <img src="../images/logo.png" alt="Logo">
+    </div>
+
+    <!-- Название и подзаголовок -->
+    <div class="title">
+        <h1>SGUELECTKG_OFFICIAL</h1>
+        <p>Официальный представитель</p>
+    </div>
+
+    <!-- ======= ПРАЙС-ЛИСТ ======= -->
+    <div class="price-list">
+        <!-- TODO: сюда потом добавь свой настоящий CSV или XLS файл -->
+        <a href="price-list.csv" download>
+            <img src="../images/csv.png" alt="CSV прайс-лист">
+            <p>Прайс-лист</p>
+        </a>
+    </div>
+
+
+
+    <!-- Контакты и соцсети -->
+    <div class="contacts">
+        <p><b>+996700028500</b></p>
+        <p><b>+996556787444</b></p>
+        <div class="social">
+            <!-- TODO: сюда можно добавить ссылки на соцсети -->
+            <img src="../images/instagram.png" alt="Instagram">
+            <img src="../images/tiktok.png" alt="TikTok">
+        </div>
+    </div>
+</header>
+
+<!-- ======= КАТЕГОРИИ (под логотипом) ======= -->
+<!-- 5 видов оборудования -->
+<section class="categories">
+    <div class="category-list">
+        <a href="catalog.html?category=signal" class="cat">Сигнальные устройства</a>
+        <a href="catalog.html?category=zvuk" class="cat">Звуковое оборудование</a>
+        <a href="catalog.html?category=control" class="cat">Контрольно-управляющие устройства</a>
+        <a href="catalog.html?category=aksessuary" class="cat">Аксессуары</a>
+        <a href="catalog.html?category=montazh" class="cat">Монтажное оборудование</a>
+    </div>
+</section>
+
+<!-- ======= ВИТРИНЫ КАТЕГОРИЙ ======= -->
+<main class="showcases">
+
+    <section class="main-showcase">
+        <h2 id="categoryTitle">Сигнальные устройства</h2>
+
+        <div class="slider-wrapper">
+            <button class="slider-btn left" id="prevBtn">&#10094;</button>
+
+            <div class="main-slider" id="mainSlider"></div>
+
+            <button class="slider-btn right" id="nextBtn">&#10095;</button>
+        </div>
+        </div>
+    </section>
+
+</main>
+
+<script src="js/api.js"></script>
+<script src="js/cart.js"></script>
+<script src="/js/main.js?v=5"></script>
+
+
+<!-- ======= ПОДВАЛ ======= -->
+<footer>
+    <p>© 2025 Элект — спецтехника и аксессуары</p>
+</footer>
+
+</body>
+</html>

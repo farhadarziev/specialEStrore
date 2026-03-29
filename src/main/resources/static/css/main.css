@@ -1,0 +1,329 @@
+/* ======= ОБЩИЕ НАСТРОЙКИ ======= */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f3f8fb; /* Светлый фон сайта */
+}
+
+/* ======= ВЕРХНЯЯ СИНЯЯ ПАНЕЛЬ ======= */
+.top-bar {
+    background-color: #0074c2; /* Синий фон */
+    color: white;
+    display: flex;
+    justify-content: space-between; /* Меню слева, поиск справа */
+    align-items: center;
+    padding: 8px 25px;
+    font-size: 15px;
+}
+
+/* Список меню слева */
+.top-bar ul {
+    list-style: none; /* Убираем точки */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 25px; /* Расстояние между пунктами меню */
+}
+
+/* Ссылки меню */
+.top-bar a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.top-bar a:hover {
+    text-decoration: underline; /* Подчеркивание при наведении */
+}
+
+/* Правая часть верхнего меню (поиск, корзина, вход) */
+.menu-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Поле поиска */
+.menu-right input {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+/* Кнопка поиска */
+.menu-right button {
+    border: none;
+    background: #005c9f;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.menu-right button:hover {
+    background: #004f88;
+}
+
+/* ======= ШАПКА С ЛОГОТИПОМ ======= */
+.main-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    padding: 15px 40px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Логотип */
+.logo img {
+    height: 200px;
+    background-color: white; /* Белый фон под логотипом */
+    border-radius: 10px;
+}
+
+/* Название компании */
+.title {
+    margin-left: -80px; /* Сдвигаем ближе к логотипу */
+    text-align: left;
+}
+
+.title h1 {
+    margin: 0;
+    color: #191970;
+    font-size: 50px;
+}
+
+.title p {
+    margin: 3px 0 0 0;
+    color: #555;
+    font-style: italic;
+}
+
+/* Контакты и соцсети */
+.contacts {
+    text-align: right;
+    min-width: 220px;
+}
+
+.contacts p {
+    margin: 0;
+    font-weight: bold;
+    color: #222;
+}
+
+/* Блок соцсетей */
+.social {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.social img {
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+}
+
+/* ======= КАТЕГОРИИ ======= */
+.categories {
+    background-color: #0074c2;
+    padding: 15px 30px;
+}
+
+.category-list {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
+
+.cat {
+    flex: 1;
+    text-align: center;
+    background-color: #0074c2;
+    color: white;
+    font-weight: bold;
+    padding: 12px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.cat:hover {
+    background-color: white;
+    color: #0074c2;
+    transform: scale(1.03);
+}
+
+
+/* ======= ПОДВАЛ ======= */
+footer {
+    background-color: #0074c2;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    margin-top: 40px;
+}
+/* ======= ИКОНКА CSV + НАДПИСЬ ======= */
+.price-list {
+    text-align: center;
+    margin-top: -20px;
+}
+
+.price-list a {
+    text-decoration: none;
+    color: #0074c2;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: 0.3s;
+}
+
+.price-list img {
+    width: 60px; /* размер иконки */
+    height: auto;
+    margin-bottom: 5px;
+}
+
+.price-list p {
+    margin: 0;
+    font-size: 16px;
+}
+
+.price-list a:hover {
+    transform: scale(1.05);
+    color: #005fa3;
+}
+
+
+
+
+/* ===== ГЛАВНЫЙ СЛАЙДЕР ПО КАТЕГОРИЯМ ===== */
+
+.main-showcase {
+    margin: 40px;
+}
+
+#categoryTitle {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #003366;
+}
+
+.slider-wrapper {
+    overflow: hidden;
+    width: 100%;
+}
+
+.main-slider {
+    display: flex;
+    transition: transform 0.7s ease-in-out;
+}
+
+/* Один слайд = одна категория */
+.slide {
+    min-width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+}
+
+/* Карточка товара */
+.product-card {
+    width: 220px;
+    background: white;
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    text-decoration: none;
+    color: black;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.product-card:hover {
+    transform: scale(1.05);
+}
+
+.product-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: contain;
+}
+
+.product-card h3 {
+    font-size: 15px;
+    margin: 10px 0 5px;
+}
+
+.product-card p {
+    font-weight: bold;
+    color: #0074c2;
+}
+/* ===== КНОПКИ СЛАЙДЕРА ===== */
+
+.slider-wrapper {
+    position: relative;
+}
+
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 116, 194, 0.85);
+    border: none;
+    color: white;
+    font-size: 30px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    transition: 0.3s;
+}
+
+.slider-btn:hover {
+    background: rgba(0, 116, 194, 1);
+}
+
+.slider-btn.left {
+    left: 10px;
+}
+
+.slider-btn.right {
+    right: 10px;
+}
+
+.add-to-cart-btn {
+    margin-top: 8px;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+.toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #222;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: 0.3s;
+    z-index: 9999;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+
+
+
+
