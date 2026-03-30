@@ -1,0 +1,51 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+}
+
+.header {
+    background: #1e3a8a;
+    padding: 20px;
+    text-align: center;
+    color: white;
+}
+
+.company-name {
+    font-size: 32px;
+    margin: 0;
+}
+
+.about-section {
+    display: flex;
+    padding: 40px;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+.about-text {
+    flex: 2;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.about-images {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.about-images img {
+    width: 100%;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.video-section {
+    margin-top: 60px;
+    padding: 40px;
+    text-align: center;
+    background: #e5e7eb;
+}
