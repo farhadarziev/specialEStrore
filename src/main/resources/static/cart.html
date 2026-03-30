@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Корзина</title>
+    <link rel="stylesheet" href="/css/cart.css">
+</head>
+<body>
+
+<h1>Корзина</h1>
+
+<div id="cart-items"></div>
+
+<div class="cart-footer">
+    <p>Итого: <span id="cart-total">0 сом</span></p>
+    <button id="checkout-btn">Оформить заказ</button>
+    <button id="clear-cart">Очистить корзину</button>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/cart.js?v=3"></script>
+<script>
+    if (localStorage.getItem("token")) {
+        renderCart("cart-items", "cart-total");
+    } else {
+        renderLocalCart("cart-items", "cart-total");
+    }
+</script>
+
+</body>
+</html>

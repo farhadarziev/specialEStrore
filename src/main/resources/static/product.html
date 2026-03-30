@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Товар</title>
+  <link rel="stylesheet" href="/css/product.css?v=3">
+</head>
+<body>
+
+<div class="product-page">
+
+  <div class="product-main">
+    <!-- Левая часть -->
+    <div class="product-image">
+      <img id="product-image">
+    </div>
+
+    <!-- Правая часть -->
+    <div class="product-info">
+      <h1 id="product-name"></h1>
+      <p class="product-price" id="product-price"></p>
+
+      <button
+              class="add-to-cart-btn"
+              data-id="">
+        В корзину
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Описание -->
+  <div class="product-description">
+    <h2>Описание</h2>
+    <p id="product-description"></p>
+  </div>
+
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/cart.js"></script>
+<script src="/js/product.js?v=2"></script>
+</body>
+</html>
