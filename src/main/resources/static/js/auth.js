@@ -23,6 +23,7 @@ function switchMode() {
 function submitAuth() {
     const login = document.getElementById("login").value.trim();
     const password = document.getElementById("password").value.trim();
+    const submitButton = document.querySelector("button");
 
     if (!login || !password) {
         alert("Заполните логин и пароль");
@@ -44,6 +45,7 @@ function submitAuth() {
             return;
         }
     }
+    submitButton.disabled = true;
 
     fetch(`/auth/${mode}`, {
         method: "POST",
@@ -54,34 +56,20 @@ function submitAuth() {
             if (!res.ok) throw new Error();
             return mode === "login" ? res.json() : null;
         })
-        .then(data => {
+        .then(async data => {
             if (mode === "login") {
                 localStorage.setItem("token", data.token);
 
                 const localCart = JSON.parse(localStorage.getItem("cart") || "{}");
 
-                const requests = [];
+                await replaceServerCartWithLocal(localCart);
 
-                for (const productId in localCart) {
-                    for (let i = 0; i < localCart[productId]; i++) {
-                        requests.push(
-                            authFetch(`/api/cart/add/${productId}`, { method: "POST" })
-                        );
-                    }
-                }
+                localStorage.removeItem("cart");
+                showToast("Вы успешно вошли");
 
-                Promise.all(requests)
-                    .then(() => {
-                        localStorage.removeItem("cart");
-                        showToast("Вы успешно вошли");
-                        setTimeout(() => {
-                            window.location.href = "/main.html";
-                        }, 800);
-                    })
-                    .catch(() => {
-                        alert("Ошибка переноса корзины");
-                        window.location.href = "/main.html";
-                    });
+                setTimeout(() => {
+                    window.location.href = "/main.html";
+                }, 800);
             } else {
                 alert("Регистрация успешна. Войдите в аккаунт");
                 document.getElementById("login").value = "";
@@ -89,7 +77,12 @@ function submitAuth() {
                 switchMode();
             }
         })
-        .catch(() => alert("Ошибка авторизации"));
+        .catch(() => {
+            alert("Ошибка авторизации");
+        })
+        .finally(() => {
+            submitButton.disabled = false;
+        });
 }
 
 function showToast(text) {
@@ -109,3 +102,31 @@ function showToast(text) {
     }, 2000);
 }
 
+
+async function replaceServerCartWithLocal(localCart) {
+    const entries = Object.entries(localCart);
+
+    if (entries.length === 0) {
+        return;
+    }
+
+    const clearRes = await authFetch("/api/cart", {
+        method: "DELETE"
+    });
+
+    if (!clearRes.ok) {
+        throw new Error("Не удалось очистить серверную корзину");
+    }
+
+    for (const [productId, quantity] of entries) {
+        for (let i = 0; i < quantity; i++) {
+            const addRes = await authFetch(`/api/cart/add/${productId}`, {
+                method: "POST"
+            });
+
+            if (!addRes.ok) {
+                throw new Error(`Не удалось добавить товар ${productId}`);
+            }
+        }
+    }
+}
