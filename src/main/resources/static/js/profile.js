@@ -1,10 +1,9 @@
 const token = localStorage.getItem("token");
 
 if (!token) {
-    localStorage.removeItem("token");
     window.location.href = "/auth.html";
+    throw new Error("Нет токена");
 }
-
 
 // ===== ПРОФИЛЬ =====
 fetch("/api/user/me", {
@@ -29,14 +28,19 @@ fetch("/api/user/me", {
         window.location.href = "/auth.html";
     });
 
-
 // ===== ЗАКАЗЫ =====
 fetch("/api/orders/my", {
     headers: {
         "Authorization": "Bearer " + token
     }
 })
-    .then(res => res.json())
+    .then(res => {
+        if (!res.ok) {
+            document.getElementById("orders").innerHTML = "<p>Заказов пока нет</p>";
+            return [];
+        }
+        return res.json();
+    })
     .then(orders => {
         const block = document.getElementById("orders");
 
@@ -56,10 +60,6 @@ fetch("/api/orders/my", {
             <hr>
         `;
         });
-    })
-    .catch(() => {
-        localStorage.removeItem("token");
-        window.location.href = "/auth.html";
     });
 
 document.getElementById("logoutBtn").onclick = () => {

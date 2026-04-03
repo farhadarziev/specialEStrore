@@ -57,20 +57,31 @@ function submitAuth() {
         .then(data => {
             if (mode === "login") {
                 localStorage.setItem("token", data.token);
-                localStorage.removeItem("cart"); // <-- гостевая корзина УБИРАЕТСЯ
-                window.location.href = "/";
+
                 const localCart = JSON.parse(localStorage.getItem("cart") || "{}");
+
+                const requests = [];
 
                 for (const productId in localCart) {
                     for (let i = 0; i < localCart[productId]; i++) {
-                        authFetch(`/api/cart/add/${productId}`, { method: "POST" });
+                        requests.push(
+                            authFetch(`/api/cart/add/${productId}`, { method: "POST" })
+                        );
                     }
                 }
-                localStorage.removeItem("cart"); // очистка гостевой корзины
-                showToast("Вы успешно вошли");
-                setTimeout(() => {
-                    window.location.href = "/main.html";
-                }, 800);
+
+                Promise.all(requests)
+                    .then(() => {
+                        localStorage.removeItem("cart");
+                        showToast("Вы успешно вошли");
+                        setTimeout(() => {
+                            window.location.href = "/main.html";
+                        }, 800);
+                    })
+                    .catch(() => {
+                        alert("Ошибка переноса корзины");
+                        window.location.href = "/main.html";
+                    });
             } else {
                 alert("Регистрация успешна. Войдите в аккаунт");
                 document.getElementById("login").value = "";

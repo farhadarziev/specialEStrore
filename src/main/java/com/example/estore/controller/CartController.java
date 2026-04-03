@@ -3,8 +3,10 @@ package com.example.estore.controller;
 
 import com.example.estore.model.Cart;
 import com.example.estore.service.CartService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 
 @RestController
@@ -19,10 +21,19 @@ public class CartController {
 
 
     private Long getUserId() {
-        return (Long) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null || auth.getPrincipal() == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
+        }
+
+        Object principal = auth.getPrincipal();
+
+        if (principal instanceof Long userId) {
+            return userId;
+        }
+
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
     }
 
     @PostMapping("/add/{productId}")

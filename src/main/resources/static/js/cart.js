@@ -53,7 +53,8 @@ async function renderLocalCart(containerId, totalId) {
         <img src="${product.image}" alt="${product.name}">
         <div class="info">
             <h3>${product.name}</h3>
-            <p>${product.price} сом</p>
+            <p>Цена за 1 шт: ${product.price} сом</p>
+<p>Сумма: ${product.price * quantity} сом</p>
 
             <div class="controls">
                 <button onclick="minusLocal(${productId})">−</button>
@@ -165,7 +166,8 @@ async function renderCart(containerId, totalId) {
     <img src="${product.image}">
     <div class="info">
         <h3>${product.name}</h3>
-        <p>${product.price} сом</p>
+        <p>Цена за 1 шт: ${product.price} сом</p>
+<p>Сумма: ${product.price * item.quantity} сом</p>
 
         <div class="controls">
             <button onclick="minus(${item.productId})">−</button>

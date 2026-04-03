@@ -24,19 +24,26 @@ public class OrderController {
     }
 
     private Long getUserId() {
-        return (Long) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null || auth.getPrincipal() == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        Object principal = auth.getPrincipal();
+
+        if (principal instanceof Long userId) {
+            return userId;
+        }
+
+        throw new RuntimeException("Unauthorized");
     }
 
-    // 🔥 ОФОРМИТЬ ЗАКАЗ
     @PostMapping("/create")
     public void createOrder() {
         orderService.createFromCart(getUserId());
     }
 
-    // 🔥 МОИ ЗАКАЗЫ
     @GetMapping("/my")
     public List<OrderResponse> myOrders() {
         return orderService.findResponsesByUserId(getUserId());

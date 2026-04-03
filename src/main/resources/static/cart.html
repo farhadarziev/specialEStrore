@@ -20,7 +20,7 @@
 <script src="js/api.js"></script>
 <script src="js/cart.js?v=3"></script>
 <script>
-    if (localStorage.getItem("token")) {
+    if (isAuth()) {
         renderCart("cart-items", "cart-total");
     } else {
         renderLocalCart("cart-items", "cart-total");
