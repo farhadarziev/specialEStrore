@@ -30,6 +30,26 @@ function submitAuth() {
         return;
     }
 
+    if (login.length < 5 || login.length > 30) {
+        alert("Логин должен быть от 5 до 30 символов");
+        return;
+    }
+
+    if (/\s/.test(login)) {
+        alert("Логин не должен содержать пробелы");
+        return;
+    }
+
+    if (!/^[A-Za-z0-9_.]+$/.test(login)) {
+        alert("Логин может содержать только латинские буквы, цифры, _ и .");
+        return;
+    }
+
+    if (password.length < 8 || password.length > 50) {
+        alert("Пароль должен быть от 8 до 50 символов");
+        return;
+    }
+
     const body = {
         login,
         password
@@ -40,8 +60,18 @@ function submitAuth() {
         body.surname = document.getElementById("surname").value.trim();
         body.phoneNum = document.getElementById("phoneNum").value.trim();
 
-        if (!body.name || !body.surname || !body.phoneNum) {
-            alert("Заполните все поля регистрации");
+        if (!body.name) {
+            alert("Введите имя");
+            return;
+        }
+
+        if (!body.surname) {
+            alert("Введите фамилию");
+            return;
+        }
+
+        if (!body.phoneNum) {
+            alert("Введите номер телефона");
             return;
         }
     }
@@ -53,7 +83,11 @@ function submitAuth() {
         body: JSON.stringify(body)
     })
         .then(res => {
-            if (!res.ok) throw new Error();
+            if (!res.ok) {
+                return res.text().then(text => {
+                    throw new Error(text || "Ошибка авторизации");
+                });
+            }
             return mode === "login" ? res.json() : null;
         })
         .then(async data => {
