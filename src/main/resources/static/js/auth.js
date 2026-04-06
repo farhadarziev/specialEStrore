@@ -7,14 +7,14 @@ function switchMode() {
         mode = "register";
         registerFields.style.display = "block";
         document.getElementById("title").innerText = "Регистрация";
-        document.querySelector("button").innerText = "Зарегистрироваться";
+        document.getElementById("submitBtn").innerText = "Зарегистрироваться";
         document.getElementById("toggle").innerHTML =
             'Уже есть аккаунт? <a href="#" onclick="switchMode()">Войти</a>';
     } else {
         mode = "login";
         registerFields.style.display = "none";
         document.getElementById("title").innerText = "Вход";
-        document.querySelector("button").innerText = "Войти";
+        document.getElementById("submitBtn").innerText = "Войти";
         document.getElementById("toggle").innerHTML =
             'Нет аккаунта? <a href="#" onclick="switchMode()">Зарегистрироваться</a>';
     }
@@ -23,30 +23,31 @@ function switchMode() {
 function submitAuth() {
     const login = document.getElementById("login").value.trim();
     const password = document.getElementById("password").value.trim();
-    const submitButton = document.querySelector("button");
+    const submitButton = document.getElementById("submitBtn");
+    setFormMessage("");
 
     if (!login || !password) {
-        alert("Заполните логин и пароль");
+        setFormMessage("Заполните логин и пароль");
         return;
     }
 
     if (login.length < 5 || login.length > 30) {
-        alert("Логин должен быть от 5 до 30 символов");
+        setFormMessage("Логин должен быть от 5 до 30 символов");
         return;
     }
 
     if (/\s/.test(login)) {
-        alert("Логин не должен содержать пробелы");
+        setFormMessage("Логин не должен содержать пробелы");
         return;
     }
 
     if (!/^[A-Za-z0-9_.]+$/.test(login)) {
-        alert("Логин может содержать только латинские буквы, цифры, _ и .");
+        setFormMessage("Логин может содержать только латинские буквы, цифры, _ и .");
         return;
     }
 
     if (password.length < 8 || password.length > 50) {
-        alert("Пароль должен быть от 8 до 50 символов");
+        setFormMessage("Пароль должен быть от 8 до 50 символов");
         return;
     }
 
@@ -61,17 +62,17 @@ function submitAuth() {
         body.phoneNum = document.getElementById("phoneNum").value.trim();
 
         if (!body.name) {
-            alert("Введите имя");
+            setFormMessage("Введите имя");
             return;
         }
 
         if (!body.surname) {
-            alert("Введите фамилию");
+            setFormMessage("Введите фамилию");
             return;
         }
 
         if (!body.phoneNum) {
-            alert("Введите номер телефона");
+            setFormMessage("Введите номер телефона");
             return;
         }
     }
@@ -99,41 +100,52 @@ function submitAuth() {
                 await replaceServerCartWithLocal(localCart);
 
                 localStorage.removeItem("cart");
-                showToast("Вы успешно вошли");
+                showNotification("Вы успешно вошли");
 
                 setTimeout(() => {
                     window.location.href = "/main.html";
                 }, 800);
             } else {
-                alert("Регистрация успешна. Войдите в аккаунт");
+                showNotification("Регистрация успешна. Войдите в аккаунт");
                 document.getElementById("login").value = "";
                 document.getElementById("password").value = "";
                 switchMode();
             }
         })
-        .catch(() => {
-            alert("Ошибка авторизации");
+        .catch(err => {
+            showNotification(err.message || "Ошибка авторизации", "error");
         })
         .finally(() => {
             submitButton.disabled = false;
         });
 }
 
-function showToast(text) {
-    let toast = document.getElementById("toast");
+function showNotification(text, type = "info") {
+    const container = document.getElementById("notification-container");
+    if (!container) return;
 
-    if (!toast) {
-        toast = document.createElement("div");
-        toast.id = "toast";
-        document.body.appendChild(toast);
-    }
+    const notification = document.createElement("div");
+    notification.className = `notification ${type}`;
+    notification.textContent = text;
 
-    toast.innerText = text;
-    toast.classList.add("show");
+    container.appendChild(notification);
+
+    requestAnimationFrame(() => {
+        notification.classList.add("show");
+    });
 
     setTimeout(() => {
-        toast.classList.remove("show");
-    }, 2000);
+        notification.classList.remove("show");
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }, 2500);
+}
+
+function setFormMessage(text = "") {
+    const formMessage = document.getElementById("form-message");
+    if (!formMessage) return;
+    formMessage.textContent = text;
 }
 
 
