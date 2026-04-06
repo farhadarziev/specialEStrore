@@ -1,36 +1,28 @@
 package com.example.estore.service;
 
 import com.example.estore.model.User;
+import com.example.estore.repository.UserRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class UserService {
-    private final List<User> users = new ArrayList<>();
-    private Long idCounter = 1L;
+   private final UserRepository userRepository;
+
+   public UserService(UserRepository userRepository) {
+       this.userRepository = userRepository;
+   }
 
     public User register(User user) {
-        user.setId(idCounter++);
-        users.add(user);
-        System.out.println("REGISTER: " + user.getLogin() + " id=" + user.getId());
-
-        return user;
+        System.out.println("REGISTER: " + user.getLogin());
+        return userRepository.save(user);
     }
 
     public User findByLogin(String login) {
-        return users.stream()
-                .filter(u -> u.getLogin().equals(login))
-                .findFirst()
-                .orElse(null);
+        return userRepository.findByLogin(login).orElse(null);
     }
 
     public User findById(Long id) {
-        return users.stream()
-                .filter( u -> u.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+        return userRepository.findById(id).orElse(null);
     }
 
 }
