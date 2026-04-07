@@ -83,12 +83,22 @@ function submitAuth() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
     })
-        .then(res => {
+        .then(async res => {
             if (!res.ok) {
-                return res.text().then(text => {
-                    throw new Error(text || "Ошибка авторизации");
-                });
+                let message = "Ошибка авторизации";
+
+                try {
+                    const data = await res.json();
+                    message = data.message || data.error || message;
+                } catch (e) {
+                    // если не JSON — читаем как текст
+                    const text = await res.text();
+                    if (text) message = text;
+                }
+
+                throw new Error(message);
             }
+
             return mode === "login" ? res.json() : null;
         })
         .then(async data => {

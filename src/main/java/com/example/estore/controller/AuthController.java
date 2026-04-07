@@ -90,33 +90,13 @@ public class AuthController {
         String login = request.getLogin() == null ? "" : request.getLogin().trim();
         String password = request.getPassword() == null ? "" : request.getPassword().trim();
 
-        if (login.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Введите логин");
-        }
-
-        if (password.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Введите пароль");
-        }
-
-        if (login.length() < 5 || login.length() > 30) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Логин должен быть от 5 до 30 символов");
-        }
-
-        if (login.contains(" ")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Логин не должен содержать пробелы");
-        }
-
-        if (!login.matches("^[A-Za-z0-9_.]+$")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный формат логина");
-        }
-
-        if (password.length() < 8 || password.length() > 50) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Пароль должен быть от 8 до 50 символов");
+        if (login.isEmpty() || password.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Введите логин и пароль");
         }
 
         User user = userService.findByLogin(login);
 
-        if (user == null || !user.getPassword().equals(password)) {
+        if (user == null || !userService.matchesPassword(password, user.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Неверный логин или пароль");
         }
 
