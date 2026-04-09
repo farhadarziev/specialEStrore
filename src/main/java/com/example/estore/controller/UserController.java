@@ -2,7 +2,7 @@ package com.example.estore.controller;
 
 import com.example.estore.dto.UserResponse;
 import com.example.estore.mapper.UserMapper;
-import com.example.estore.model.User;
+import com.example.estore.entity.User;
 import com.example.estore.service.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;

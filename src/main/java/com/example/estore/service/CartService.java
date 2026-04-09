@@ -1,7 +1,7 @@
 package com.example.estore.service;
 
 
-import com.example.estore.model.Cart;
+import com.example.estore.entity.Cart;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;

@@ -3,8 +3,9 @@ package com.example.estore.controller;
 import com.example.estore.dto.AuthRequest;
 import com.example.estore.dto.AuthResponse;
 import com.example.estore.dto.RegistrationRequest;
+import com.example.estore.entity.Role;
 import com.example.estore.mapper.UserMapper;
-import com.example.estore.model.User;
+import com.example.estore.entity.User;
 import com.example.estore.security.JwtService;
 import com.example.estore.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -80,6 +81,8 @@ public class AuthController {
         user.setName(name);
         user.setSurname(surname);
         user.setPhoneNum(phoneNum);
+        user.setRole(Role.USER);
+
 
         userService.register(user);
     }

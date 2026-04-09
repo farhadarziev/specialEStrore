@@ -1,6 +1,6 @@
 package com.example.estore.repository;
 
-import com.example.estore.model.User;
+import com.example.estore.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

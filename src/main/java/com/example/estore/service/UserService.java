@@ -1,6 +1,6 @@
 package com.example.estore.service;
 
-import com.example.estore.model.User;
+import com.example.estore.entity.User;
 import com.example.estore.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

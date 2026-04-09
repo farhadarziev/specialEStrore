@@ -1,7 +1,7 @@
 package com.example.estore.controller;
 
 
-import com.example.estore.model.Cart;
+import com.example.estore.entity.Cart;
 import com.example.estore.service.CartService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;

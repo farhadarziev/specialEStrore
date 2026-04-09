@@ -2,7 +2,7 @@ package com.example.estore.mapper;
 
 
 import  com.example.estore.dto.OrderItemResponse;
-import  com.example.estore.model.OrderItem;
+import  com.example.estore.entity.OrderItem;
 
 public class OrderItemMapper {
 

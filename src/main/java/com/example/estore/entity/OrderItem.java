@@ -1,4 +1,4 @@
-package com.example.estore.model;
+package com.example.estore.entity;
 
 public class OrderItem {
     private Long productId;

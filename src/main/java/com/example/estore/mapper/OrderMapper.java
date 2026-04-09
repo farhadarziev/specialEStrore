@@ -1,7 +1,7 @@
 package com.example.estore.mapper;
 
 import  com.example.estore.dto.OrderResponse;
-import  com.example.estore.model.Order;
+import  com.example.estore.entity.Order;
 
 import java.util.stream.Collectors;
 

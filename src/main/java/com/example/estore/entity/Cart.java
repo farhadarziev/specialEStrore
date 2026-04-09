@@ -1,4 +1,4 @@
-package com.example.estore.model;
+package com.example.estore.entity;
 
 import java.util.ArrayList;
 import java.util.Iterator;

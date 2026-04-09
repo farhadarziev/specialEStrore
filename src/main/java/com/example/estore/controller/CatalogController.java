@@ -1,7 +1,7 @@
 package com.example.estore.controller;
 
 
-import com.example.estore.model.Product;
+import com.example.estore.entity.Product;
 import com.example.estore.service.ProductService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

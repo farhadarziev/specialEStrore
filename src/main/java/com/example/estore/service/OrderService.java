@@ -2,7 +2,7 @@ package com.example.estore.service;
 
 import com.example.estore.dto.OrderResponse;
 import com.example.estore.mapper.OrderMapper;
-import com.example.estore.model.*;
+import com.example.estore.entity.*;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

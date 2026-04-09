@@ -3,7 +3,7 @@ package com.example.estore.mapper;
 
 import com.example.estore.dto.RegistrationRequest;
 import com.example.estore.dto.UserResponse;
-import com.example.estore.model.User;
+import com.example.estore.entity.User;
 
 import java.time.LocalDateTime;
 

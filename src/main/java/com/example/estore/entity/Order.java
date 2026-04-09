@@ -1,4 +1,4 @@
-package com.example.estore.model;
+package com.example.estore.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
