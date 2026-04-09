@@ -2,6 +2,7 @@ let mode = "login"; // login | register
 
 function switchMode() {
     const registerFields = document.getElementById("registerFields");
+    setFormMessage("");
 
     if (mode === "login") {
         mode = "register";
@@ -20,35 +21,45 @@ function switchMode() {
     }
 }
 
-function submitAuth() {
+async function submitAuth() {
     const login = document.getElementById("login").value.trim();
     const password = document.getElementById("password").value.trim();
     const submitButton = document.getElementById("submitBtn");
+
     setFormMessage("");
 
-    if (!login || !password) {
-        setFormMessage("Заполните логин и пароль");
-        return;
+    if (mode === "login") {
+        if (!login || !password) {
+            setFormMessage("Введите логин и пароль");
+            return;
+        }
     }
 
-    if (login.length < 5 || login.length > 30) {
-        setFormMessage("Логин должен быть от 5 до 30 символов");
-        return;
-    }
+    if (mode === "register") {
+        if (!login || !password) {
+            setFormMessage("Заполните логин и пароль");
+            return;
+        }
 
-    if (/\s/.test(login)) {
-        setFormMessage("Логин не должен содержать пробелы");
-        return;
-    }
+        if (login.length < 5 || login.length > 30) {
+            setFormMessage("Логин должен быть от 5 до 30 символов");
+            return;
+        }
 
-    if (!/^[A-Za-z0-9_.]+$/.test(login)) {
-        setFormMessage("Логин может содержать только латинские буквы, цифры, _ и .");
-        return;
-    }
+        if (/\s/.test(login)) {
+            setFormMessage("Логин не должен содержать пробелы");
+            return;
+        }
 
-    if (password.length < 8 || password.length > 50) {
-        setFormMessage("Пароль должен быть от 8 до 50 символов");
-        return;
+        if (!/^[A-Za-z0-9_.]+$/.test(login)) {
+            setFormMessage("Логин может содержать только латинские буквы, цифры, _ и .");
+            return;
+        }
+
+        if (password.length < 8 || password.length > 50) {
+            setFormMessage("Пароль должен быть от 8 до 50 символов");
+            return;
+        }
     }
 
     const body = {
@@ -76,58 +87,60 @@ function submitAuth() {
             return;
         }
     }
+
     submitButton.disabled = true;
 
-    fetch(`/auth/${mode}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-    })
-        .then(async res => {
-            if (!res.ok) {
-                let message = "Ошибка авторизации";
-
-                try {
-                    const data = await res.json();
-                    message = data.message || data.error || message;
-                } catch (e) {
-                    // если не JSON — читаем как текст
-                    const text = await res.text();
-                    if (text) message = text;
-                }
-
-                throw new Error(message);
-            }
-
-            return mode === "login" ? res.json() : null;
-        })
-        .then(async data => {
-            if (mode === "login") {
-                localStorage.setItem("token", data.token);
-
-                const localCart = JSON.parse(localStorage.getItem("cart") || "{}");
-
-                await replaceServerCartWithLocal(localCart);
-
-                localStorage.removeItem("cart");
-                showNotification("Вы успешно вошли");
-
-                setTimeout(() => {
-                    window.location.href = "/main.html";
-                }, 800);
-            } else {
-                showNotification("Регистрация успешна. Войдите в аккаунт");
-                document.getElementById("login").value = "";
-                document.getElementById("password").value = "";
-                switchMode();
-            }
-        })
-        .catch(err => {
-            showNotification(err.message || "Ошибка авторизации", "error");
-        })
-        .finally(() => {
-            submitButton.disabled = false;
+    try {
+        const res = await fetch(`/auth/${mode}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
         });
+
+        if (!res.ok) {
+            let message = "Ошибка авторизации";
+
+            try {
+                const data = await res.json();
+                message = data.message || data.error || message;
+            } catch (e) {
+                message = "Ошибка авторизации";
+            }
+
+            setFormMessage(message);
+            return;
+        }
+
+        if (mode === "login") {
+            const data = await res.json();
+
+            localStorage.setItem("token", data.token);
+
+            const localCart = JSON.parse(localStorage.getItem("cart") || "{}");
+            await replaceServerCartWithLocal(localCart);
+
+            localStorage.removeItem("cart");
+            showNotification("Вы успешно вошли");
+
+            setTimeout(() => {
+                window.location.href = "/main.html";
+            }, 800);
+        } else {
+            showNotification("Регистрация успешна. Теперь войдите в аккаунт");
+
+            document.getElementById("login").value = "";
+            document.getElementById("password").value = "";
+            document.getElementById("name").value = "";
+            document.getElementById("surname").value = "";
+            document.getElementById("phoneNum").value = "";
+
+            switchMode();
+        }
+    } catch (err) {
+        setFormMessage("Ошибка сервера");
+    } finally {
+        submitButton.disabled = false;
+    }
 }
 
 function showNotification(text, type = "info") {
@@ -157,7 +170,6 @@ function setFormMessage(text = "") {
     if (!formMessage) return;
     formMessage.textContent = text;
 }
-
 
 async function replaceServerCartWithLocal(localCart) {
     const entries = Object.entries(localCart);
