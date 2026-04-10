@@ -1,38 +1,86 @@
 package com.example.estore.service;
 
 
-import com.example.estore.entity.Cart;
+import com.example.estore.entity.*;
+import com.example.estore.repository.CartItemRepository;
+import com.example.estore.repository.ProductRepository;
+import com.example.estore.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
 public class CartService {
-    private final Map<Long, Cart> carts = new HashMap<>();
+    private final CartItemRepository cartItemRepository;
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
+
+    public CartService(
+            CartItemRepository cartItemRepository,
+            UserRepository userRepository,
+            ProductRepository productRepository) {
+        this.cartItemRepository = cartItemRepository;
+        this.userRepository = userRepository;
+        this.productRepository = productRepository;
+    }
 
     public Cart getCart(Long userId) {
-        return carts.computeIfAbsent(userId, id -> new Cart());
+        List<CartItemEntity> entities = cartItemRepository.findByUserId(userId);
+
+        Cart cart = new Cart();
+        for (CartItemEntity entity : entities) {
+            cart.getItems().add(
+                    new CartItem(
+                            entity.getProduct().getId(),
+                            entity.getQuantity()
+                    )
+            );
+        }
+        return cart;
     }
 
     public void addToCart(Long userId, Long productId) {
-        Cart cart = getCart(userId);
-        cart.addProduct(productId);
+        CartItemEntity item = cartItemRepository
+                .findByUserIdAndProductId(userId, productId)
+                .orElseGet(() -> {
+                    User user = userRepository.findById(userId)
+                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+                    Product product = productRepository.findById(productId)
+                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+
+                    CartItemEntity newItem = new CartItemEntity();
+                    newItem.setUser(user);
+                    newItem.setProduct(product);
+                    newItem.setQuantity(0);
+                    return newItem;
+                });
+
+        item.setQuantity(item.getQuantity() + 1);
+        cartItemRepository.save(item);
     }
 
     public void minusProduct(Long userId, Long productId) {
-        Cart cart = getCart(userId);
-        cart.minusProduct(productId);
+        CartItemEntity item = cartItemRepository
+                .findByUserIdAndProductId(userId, productId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart item not found"));
+
+        if (item.getQuantity() > 1) {
+            item.setQuantity(item.getQuantity() - 1);
+            cartItemRepository.save(item);
+        }
     }
     public void removeProduct(Long userId, Long productId) {
-        Cart cart = getCart(userId);
-        cart.removeProduct(productId);
+        cartItemRepository.deleteByUserIdAndProductId(userId, productId);
     }
 
 
     public void clearCart(Long userId) {
-        Cart cart = getCart(userId);
-        cart.getItems().clear();
+        cartItemRepository.deleteByUserId(userId);
     }
 
 
