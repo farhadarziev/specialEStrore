@@ -1,17 +1,15 @@
 package com.example.estore.service;
 
-
 import com.example.estore.entity.*;
 import com.example.estore.repository.CartItemRepository;
 import com.example.estore.repository.ProductRepository;
 import com.example.estore.repository.UserRepository;
+
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class CartService {
@@ -42,7 +40,7 @@ public class CartService {
         }
         return cart;
     }
-
+    @Transactional
     public void addToCart(Long userId, Long productId) {
         CartItemEntity item = cartItemRepository
                 .findByUserIdAndProductId(userId, productId)
@@ -64,6 +62,7 @@ public class CartService {
         cartItemRepository.save(item);
     }
 
+    @Transactional
     public void minusProduct(Long userId, Long productId) {
         CartItemEntity item = cartItemRepository
                 .findByUserIdAndProductId(userId, productId)
@@ -72,16 +71,23 @@ public class CartService {
         if (item.getQuantity() > 1) {
             item.setQuantity(item.getQuantity() - 1);
             cartItemRepository.save(item);
+        }else {
+            cartItemRepository.delete(item);
         }
     }
+
+    @Transactional
     public void removeProduct(Long userId, Long productId) {
-        cartItemRepository.deleteByUserIdAndProductId(userId, productId);
+        CartItemEntity item = cartItemRepository
+                .findByUserIdAndProductId(userId, productId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cart item not found"));
+
+        cartItemRepository.delete(item);
     }
 
-
+    @Transactional
     public void clearCart(Long userId) {
-        cartItemRepository.deleteByUserId(userId);
+        List<CartItemEntity> items = cartItemRepository.findByUserId(userId);
+        cartItemRepository.deleteAll(items);
     }
-
-
 }
