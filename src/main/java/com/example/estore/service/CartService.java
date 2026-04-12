@@ -27,7 +27,7 @@ public class CartService {
     }
 
     public Cart getCart(Long userId) {
-        List<CartItemEntity> entities = cartItemRepository.findByUserId(userId);
+        List<CartItemEntity> entities = cartItemRepository.findByUserIdOrderByProductIdAsc(userId);
 
         Cart cart = new Cart();
         for (CartItemEntity entity : entities) {
@@ -71,8 +71,6 @@ public class CartService {
         if (item.getQuantity() > 1) {
             item.setQuantity(item.getQuantity() - 1);
             cartItemRepository.save(item);
-        }else {
-            cartItemRepository.delete(item);
         }
     }
 
@@ -87,7 +85,7 @@ public class CartService {
 
     @Transactional
     public void clearCart(Long userId) {
-        List<CartItemEntity> items = cartItemRepository.findByUserId(userId);
+        List<CartItemEntity> items = cartItemRepository.findByUserIdOrderByProductIdAsc(userId);
         cartItemRepository.deleteAll(items);
     }
 }

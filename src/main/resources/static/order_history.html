@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>История заказов</title>
+    <link rel="stylesheet" href="/css/order_history.css">
+</head>
+<body>
+<div class="history-page">
+    <div class="history-container">
+        <div class="history-topbar">
+            <div>
+                <h1>История заказов</h1>
+                <p class="history-subtitle">Здесь отображаются все оформленные вами заказы</p>
+            </div>
+
+            <div class="topbar-actions">
+                <button id="backBtn" class="secondary-btn" type="button">Назад в кабинет</button>
+            </div>
+        </div>
+
+        <div id="ordersHistoryList" class="orders-history-list"></div>
+    </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/order_history.js"></script>
+</body>
+</html>

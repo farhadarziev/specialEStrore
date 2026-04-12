@@ -2,28 +2,35 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Мой кабинет</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет</title>
     <link rel="stylesheet" href="/css/profile.css">
 </head>
 <body>
+<div class="profile-page">
+    <div class="profile-container">
+        <h1>Личный кабинет</h1>
 
-<h1>Личный кабинет</h1>
+        <div class="profile-info">
+            <div class="info-card" id="login">Логин:</div>
+            <div class="info-card" id="name">Имя:</div>
+            <div class="info-card" id="surname">Фамилия:</div>
+            <div class="info-card" id="phone">Телефон:</div>
+            <div class="info-card" id="registeredAt">Дата регистрации:</div>
+        </div>
 
-<p>Логин: <span id="login"></span></p>
-<p>Имя: <span id="name"></span></p>
-<p>Фамилия: <span id="surname"></span></p>
-<p>Телефон: <span id="phone"></span></p>
-<p>Дата регистрации: <span id="registeredAt"></span></p>
+        <div class="orders-header">
+            <h2>Мои заказы</h2>
+            <button id="historyBtn" class="history-btn" type="button">История</button>
+        </div>
 
-<hr>
+        <div id="ordersShortList" class="orders-short-list"></div>
 
-<h2>Мои заказы</h2>
-<div id="orders"></div>
+        <button id="logoutBtn" class="logout-btn" type="button">Выйти</button>
+    </div>
+</div>
 
-<hr>
-
-<button id="logoutBtn">Выйти</button>
-
+<script src="/js/api.js"></script>
 <script src="/js/profile.js"></script>
 </body>
 </html>

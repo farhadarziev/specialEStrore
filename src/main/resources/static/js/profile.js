@@ -1,68 +1,112 @@
-const token = localStorage.getItem("token");
+document.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem("token");
 
-if (!token) {
-    window.location.href = "/auth.html";
-    throw new Error("Нет токена");
-}
-
-// ===== ПРОФИЛЬ =====
-fetch("/api/user/me", {
-    headers: {
-        "Authorization": "Bearer " + token
-    }
-})
-    .then(res => {
-        if (!res.ok) throw new Error("Unauthorized");
-        return res.json();
-    })
-    .then(user => {
-        document.getElementById("login").textContent = user.login;
-        document.getElementById("name").textContent = user.name;
-        document.getElementById("surname").textContent = user.surname;
-        document.getElementById("phone").textContent = user.phoneNum;
-        document.getElementById("registeredAt").textContent =
-            user.registeredAt.replace("T", " ");
-    })
-    .catch(() => {
-        localStorage.removeItem("token");
+    if (!token) {
         window.location.href = "/auth.html";
-    });
-
-// ===== ЗАКАЗЫ =====
-fetch("/api/orders/my", {
-    headers: {
-        "Authorization": "Bearer " + token
+        return;
     }
-})
-    .then(res => {
-        if (!res.ok) {
-            document.getElementById("orders").innerHTML = "<p>Заказов пока нет</p>";
-            return [];
-        }
-        return res.json();
-    })
-    .then(orders => {
-        const block = document.getElementById("orders");
 
-        if (!orders || orders.length === 0) {
-            block.innerHTML = "<p>Заказов пока нет</p>";
+    const loginEl = document.getElementById("login");
+    const nameEl = document.getElementById("name");
+    const surnameEl = document.getElementById("surname");
+    const phoneEl = document.getElementById("phone");
+    const registeredAtEl = document.getElementById("registeredAt");
+
+    const ordersShortListEl = document.getElementById("ordersShortList");
+    const ordersHistoryListEl = document.getElementById("ordersHistoryList");
+    const historySectionEl = document.getElementById("historySection");
+    const historyBtn = document.getElementById("historyBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (historyBtn) {
+        historyBtn.addEventListener("click", () => {
+            window.location.href = "/order_history.html";
+        });
+    }
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+            localStorage.removeItem("token");
+            window.location.href = "/auth.html";
+        });
+    }
+
+    loadProfile();
+    loadOrders();
+
+    async function loadProfile() {
+        try {
+            const response = await authFetch("/api/user/me");
+            if (!response.ok) {
+                throw new Error("Ошибка загрузки профиля");
+            }
+
+            const user = await response.json();
+
+            loginEl.textContent = "Логин: " + (user.login || "");
+            nameEl.textContent = "Имя: " + (user.name || "");
+            surnameEl.textContent = "Фамилия: " + (user.surname || "");
+            phoneEl.textContent = "Телефон: " + (user.phoneNum || "");
+            registeredAtEl.textContent = "Дата регистрации: " + formatDate(user.registeredAt);
+        } catch (error) {
+            console.error("Ошибка профиля:", error);
+        }
+    }
+
+    async function loadOrders() {
+        try {
+            const response = await authFetch("/api/orders/my");
+            if (!response.ok) {
+                throw new Error("Ошибка загрузки заказов");
+            }
+
+            const orders = await response.json();
+            const safeOrders = Array.isArray(orders) ? orders : [];
+
+            renderShortOrders(safeOrders);
+        } catch (error) {
+            console.error("Ошибка заказов:", error);
+            ordersShortListEl.innerHTML = `<div class="empty-text">Не удалось загрузить заказы</div>`;
+        }
+    }
+
+    function renderShortOrders(orders) {
+        ordersShortListEl.innerHTML = "";
+
+        if (!orders.length) {
+            ordersShortListEl.innerHTML = `<div class="empty-text">У вас пока нет заказов</div>`;
             return;
         }
 
-        orders.forEach(o => {
-            block.innerHTML += `
-            <div class="order">
-                <b>Заказ #${o.id}</b><br>
-                Сумма: ${o.totalPrice} сом<br>
-                Статус: ${o.status}<br>
-                Дата: ${o.createdAt.replace("T", " ")}
-            </div>
-            <hr>
-        `;
-        });
-    });
+        const latestOrders = orders.slice(0, 3);
 
-document.getElementById("logoutBtn").onclick = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/auth.html";
-};
+        latestOrders.forEach(order => {
+            const card = document.createElement("div");
+            card.className = "order-card";
+
+            card.innerHTML = `
+                <div class="order-top">
+                    <div class="order-main">
+                        <div class="order-title">Заказ #${order.id ?? ""}</div>
+                        <div class="order-meta">Дата: ${formatDate(order.createdAt)}</div>
+                    </div>
+                    <div class="order-right">
+                        <div class="order-sum">${order.totalPrice ?? 0} сом</div>
+                        <div class="order-status">${order.status ?? ""}</div>
+                    </div>
+                </div>
+            `;
+
+            ordersShortListEl.appendChild(card);
+        });
+    }
+
+    function formatDate(value) {
+        if (!value) return "";
+
+        const date = new Date(value);
+        if (isNaN(date.getTime())) return value;
+
+        return date.toLocaleString("ru-RU");
+    }
+});
