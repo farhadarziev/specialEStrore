@@ -5,6 +5,7 @@ import com.example.estore.mapper.OrderMapper;
 import com.example.estore.entity.*;
 import com.example.estore.repository.OrderRepository;
 import com.example.estore.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,7 +29,7 @@ public class OrderService {
         this.userRepository = userRepository;
         this.orderRepository = orderRepository;
     }
-
+    @Transactional
     public void createFromCart(Long userId) {
 
         Cart cart = cartService.getCart(userId);

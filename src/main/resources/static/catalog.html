@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Каталог</title>
-  <link rel="stylesheet" href="/css/catalog.css?v=5">
+  <link rel="stylesheet" href="/css/catalog.css?v=6">
 </head>
 <body>
 
@@ -46,18 +46,21 @@
         <p>Монтажное оборудование</p>
       </a>
     </div>
-
   </div>
 
+  <div class="catalog-search">
+    <input type="text" id="searchInput" class="search-input" placeholder="Поиск по названию товара">
+    <button id="searchBtn" class="search-btn" type="button">Найти</button>
+    <button id="resetBtn" class="reset-btn" type="button">Сбросить</button>
+  </div>
 
   <hr>
-
   <div id="products"></div>
 
   <script src="js/api.js"></script>
   <script src="js/cart.js"></script>
 
-  <script src="/js/catalog.js?v=2"></script>
+  <script src="/js/catalog.js?v=4"></script>
 </div>
 </body>
 </html>

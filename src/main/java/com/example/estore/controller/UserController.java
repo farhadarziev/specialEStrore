@@ -4,10 +4,12 @@ import com.example.estore.dto.UserResponse;
 import com.example.estore.mapper.UserMapper;
 import com.example.estore.entity.User;
 import com.example.estore.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/user")
@@ -23,7 +25,7 @@ public class UserController {
         var auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth == null || auth.getPrincipal() == null) {
-            throw new RuntimeException("Unauthorized");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
 
         Object principal = auth.getPrincipal();
@@ -32,7 +34,7 @@ public class UserController {
             return userId;
         }
 
-        throw new RuntimeException("Unauthorized");
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
     }
 
     @GetMapping("/me")
@@ -40,7 +42,7 @@ public class UserController {
         User user = userService.findById(getUserId());
 
         if (user == null) {
-            throw new RuntimeException("User not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
 
         return UserMapper.toUserResponse(user);

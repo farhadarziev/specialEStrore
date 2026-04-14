@@ -13,9 +13,9 @@ public class DataInitializer {
     CommandLineRunner initProducts(ProductRepository repository) {
         return args -> {
 
-//            if (repository.count() > 0) {
-//                return; // чтобы не дублировались
-//            }
+            if (repository.count() > 0) {
+                return; // чтобы не дублировались
+            }
 
             repository.save(new Product(null, "Маяк проблесковый A1", "signal", 4500, "/images/mayak.png"));
             repository.save(new Product(null, "Маяк проблесковый B2", "signal", 5200, "/images/mayak2.png"));

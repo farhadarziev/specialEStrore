@@ -1,7 +1,12 @@
-let products = [];
-
 const params = new URLSearchParams(window.location.search);
 const category = params.get("category");
+const q = params.get("q");
+
+const titleEl = document.getElementById("title");
+const productsContainer = document.getElementById("products");
+const searchInput = document.getElementById("searchInput");
+const searchBtn = document.getElementById("searchBtn");
+const resetBtn = document.getElementById("resetBtn");
 
 const categoryNames = {
     signal: "Сигнальные устройства",
@@ -11,43 +16,105 @@ const categoryNames = {
     montazh: "Монтажное оборудование"
 };
 
-if (category && categoryNames[category]) {
-    document.getElementById("title").innerText = categoryNames[category];
+if (q && q.trim() !== "") {
+    titleEl.textContent = `Результаты поиска: ${q}`;
+} else if (category && categoryNames[category]) {
+    titleEl.textContent = categoryNames[category];
 }
 
-let url = "/api/products";
-if (category) {
-    url += "?category=" + category;
+if (q) {
+    searchInput.value = q;
 }
 
-fetch(url)
-    .then(res => res.json())
-    .then(data => {
-        products = data;
-        const container = document.getElementById("products");
-        container.innerHTML = "";
+loadProducts();
 
-        products.forEach(p => {
-            container.innerHTML += `
-    <div class="product-card">
-      <a href="product.html?id=${p.id}">
-        <img src="${p.image}">
-        <h3>${p.name}</h3>
-        <p>${p.price} сом</p>
-      </a>
+searchBtn.addEventListener("click", () => {
+    const query = searchInput.value.trim();
 
-      <button 
-        class="add-to-cart-btn"
-        data-id="${p.id}">
-        В корзину
-      </button>
-    </div>
-  `;
+    const url = new URL("/catalog.html", window.location.origin);
+
+    if (category) {
+        url.searchParams.set("category", category);
+    }
+
+    if (query) {
+        url.searchParams.set("q", query);
+    }
+
+    window.location.href = url.toString();
+});
+
+resetBtn.addEventListener("click", () => {
+    const url = new URL("/catalog.html", window.location.origin);
+
+    if (category) {
+        url.searchParams.set("category", category);
+    }
+
+    window.location.href = url.toString();
+});
+
+searchInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        searchBtn.click();
+    }
+});
+
+function buildApiUrl() {
+    const url = new URL("/api/products", window.location.origin);
+
+    if (category) {
+        url.searchParams.set("category", category);
+    }
+
+    if (q) {
+        url.searchParams.set("q", q);
+    }
+
+    return url.toString();
+}
+
+function loadProducts() {
+    fetch(buildApiUrl())
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Ошибка загрузки товаров");
+            }
+            return res.json();
+        })
+        .then(data => {
+            renderProducts(data);
+        })
+        .catch(err => {
+            console.error(err);
+            productsContainer.innerHTML = `<div>Не удалось загрузить товары</div>`;
         });
+}
 
+function renderProducts(products) {
+    productsContainer.innerHTML = "";
 
-    })
-    .catch(err => console.error(err));
+    if (!products.length) {
+        productsContainer.innerHTML = `<div>Товары не найдены</div>`;
+        return;
+    }
 
+    products.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "product-card";
 
+        card.innerHTML = `
+            <a href="/product.html?id=${p.id}">
+                <img src="${p.image}">
+                <h3>${p.name}</h3>
+                <p>${p.price} сом</p>
+            </a>
 
+            <button class="add-to-cart-btn" data-id="${p.id}">
+                В корзину
+            </button>
+        `;
+
+        productsContainer.appendChild(card);
+    });
+}

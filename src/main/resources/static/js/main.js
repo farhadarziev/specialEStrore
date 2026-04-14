@@ -159,6 +159,36 @@ window.onload = () => {
     }
 };
 
+// searcher
+const mainSearchInput = document.getElementById("mainSearchInput");
+const mainSearchBtn = document.getElementById("mainSearchBtn");
+
+if (mainSearchBtn && mainSearchInput) {
+    mainSearchBtn.addEventListener("click", () => {
+        const query = mainSearchInput.value.trim();
+
+        if (!query) {
+            window.location.href = "/catalog.html";
+            return;
+        }
+
+        window.location.href = `/catalog.html?q=${encodeURIComponent(query)}`;
+    });
+
+    mainSearchInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            const query = mainSearchInput.value.trim();
+
+            if (!query) {
+                window.location.href = "/catalog.html";
+                return;
+            }
+
+            window.location.href = `/catalog.html?q=${encodeURIComponent(query)}`;
+        }
+    });
+}
+
 
 
 
