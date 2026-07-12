@@ -115,18 +115,28 @@ async function submitAuth() {
             const data = await res.json();
 
             localStorage.setItem("token", data.token);
+            localStorage.setItem("role", data.role);
 
             const localCart = JSON.parse(localStorage.getItem("cart") || "{}");
             await replaceServerCartWithLocal(localCart);
 
             localStorage.removeItem("cart");
+
             showNotification("Вы успешно вошли");
 
             setTimeout(() => {
-                window.location.href = "/main.html";
+
+                if (data.role === "ADMIN") {
+                    window.location.href = "/admin.html";
+                } else {
+                    window.location.href = "/main.html";
+                }
+
             }, 800);
+
         } else {
             showNotification("Регистрация успешна. Теперь войдите в аккаунт");
+
 
             document.getElementById("login").value = "";
             document.getElementById("password").value = "";

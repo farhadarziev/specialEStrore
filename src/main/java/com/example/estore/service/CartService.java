@@ -1,6 +1,10 @@
 package com.example.estore.service;
 
-import com.example.estore.entity.*;
+import com.example.estore.entity.Cart;
+import com.example.estore.entity.CartItem;
+import com.example.estore.entity.CartItemEntity;
+import com.example.estore.entity.Product;
+import com.example.estore.entity.User;
 import com.example.estore.repository.CartItemRepository;
 import com.example.estore.repository.ProductRepository;
 import com.example.estore.repository.UserRepository;

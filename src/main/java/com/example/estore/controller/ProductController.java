@@ -1,6 +1,6 @@
 package com.example.estore.controller;
 
-import com.example.estore.entity.Product;
+import com.example.estore.dto.ProductResponse;
 import com.example.estore.service.ProductService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,15 +21,15 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> getProducts(
+    public List<ProductResponse> getProducts(
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String q
     ) {
-        return productService.findProducts(category, q);
+        return productService.findProductResponses(category, q);
     }
 
     @GetMapping("/{id}")
-    public Product getById(@PathVariable Long id) {
-        return productService.findById(id);
+    public ProductResponse getById(@PathVariable Long id) {
+        return productService.findResponseById(id);
     }
 }

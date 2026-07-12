@@ -104,7 +104,7 @@ public class AuthController {
         }
 
         String token = jwtService.generateToken(user.getId());
-        return new AuthResponse(token);
+        return new AuthResponse(token, user.getRole().name());
     }
 
 }

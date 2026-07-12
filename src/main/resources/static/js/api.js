@@ -1,15 +1,3 @@
-// function authFetch(url, options = {}) {
-//     const token = localStorage.getItem("token");
-//
-//     options.headers = options.headers || {};
-//
-//     if (token) {
-//         options.headers["Authorization"] = "Bearer " + token;
-//     }
-//
-//     return fetch(url, options);
-// }
-
 async function authFetch(url, options = {}) {
     const token = localStorage.getItem("token");
 
@@ -21,15 +9,13 @@ async function authFetch(url, options = {}) {
     options.headers = options.headers || {};
     options.headers["Authorization"] = "Bearer " + token;
 
-
     const response = await fetch(url, options);
 
     if (response.status === 401 || response.status === 403) {
         localStorage.removeItem("token");
+        localStorage.removeItem("role");
         window.location.href = "/auth.html";
         throw new Error("Не авторизован");
     }
-
-
     return response;
 }

@@ -1,12 +1,15 @@
 package com.example.estore.security;
 
-
+import com.example.estore.entity.User;
+import com.example.estore.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -15,11 +18,15 @@ import java.util.List;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
-    private final JwtService jwtService;
 
-    public JwtAuthFilter(final JwtService jwtService) {
+    private final JwtService jwtService;
+    private final UserRepository userRepository;
+
+    public JwtAuthFilter(final JwtService jwtService, UserRepository userRepository) {
         this.jwtService = jwtService;
+        this.userRepository = userRepository;
     }
+
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String uri = request.getRequestURI();
@@ -28,7 +35,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 || uri.endsWith(".html")
                 || uri.startsWith("/css/")
                 || uri.startsWith("/js/")
-                || uri.startsWith("/images/");
+                || uri.startsWith("/images/")
+                || uri.equals("/favicon.ico");
     }
 
 
@@ -51,8 +59,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             Long userId = jwtService.extractUserId(token);
 
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+            List<SimpleGrantedAuthority> authorities = List.of(
+                    new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
+            );
+
             UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(userId, null, List.of());
+                    new UsernamePasswordAuthenticationToken(user.getId(), null, authorities);
+
+            authentication.setDetails(
+                    new WebAuthenticationDetailsSource().buildDetails(request)
+            );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -62,5 +81,4 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
-
 }

@@ -1,8 +1,15 @@
 package com.example.estore.service;
 
+import com.example.estore.dto.AdminOrderResponse;
 import com.example.estore.dto.OrderResponse;
+import com.example.estore.entity.Cart;
+import com.example.estore.entity.CartItem;
+import com.example.estore.entity.Order;
+import com.example.estore.entity.OrderItem;
+import com.example.estore.entity.Product;
+import com.example.estore.entity.User;
+import com.example.estore.mapper.AdminOrderMapper;
 import com.example.estore.mapper.OrderMapper;
-import com.example.estore.entity.*;
 import com.example.estore.repository.OrderRepository;
 import com.example.estore.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -69,11 +76,18 @@ public class OrderService {
        cartService.clearCart(userId);
     }
 
-    // 🔥 ДЛЯ ПРОФИЛЯ
     public List<OrderResponse> findResponsesByUserId(Long userId) {
         return orderRepository.findByUserIdOrderByCreatedAtDesc(userId)
                 .stream()
                 .map(OrderMapper::toResponse)
+                .toList();
+    }
+
+    @Transactional
+    public List<AdminOrderResponse> findAllAdminResponses() {
+        return orderRepository.findAllByOrderByCreatedAtDesc()
+                .stream()
+                .map(AdminOrderMapper::toResponse)
                 .toList();
     }
 }

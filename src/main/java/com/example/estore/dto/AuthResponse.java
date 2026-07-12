@@ -2,12 +2,20 @@ package com.example.estore.dto;
 
 
 public class AuthResponse {
-    private String token;
 
-    public AuthResponse(String token) {
+    private String token;
+    private String role;
+
+    public AuthResponse(String token, String role) {
         this.token = token;
+        this.role = role;
     }
+
     public String getToken() {
         return token;
+    }
+
+    public String getRole() {
+        return role;
     }
 }

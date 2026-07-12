@@ -1,11 +1,15 @@
 package com.example.estore.controller;
 
-
 import com.example.estore.entity.Cart;
 import com.example.estore.service.CartService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 
@@ -63,54 +67,4 @@ public class CartController {
         return cartService.getCart(getUserId());
     }
 }
-
-//******************
-//        import org.springframework.security.core.context.SecurityContextHolder;
-//
-//@PostMapping("/add/{productId}")
-//public void addToCart(@PathVariable Long productId) {
-//
-//    Long userId = (Long) SecurityContextHolder
-//            .getContext()
-//            .getAuthentication()
-//            .getPrincipal();
-//
-//    cartService.addToCart(userId, productId);
-//}
-//
-//
-//@PostMapping("/minus/{productId}")
-//public void minusProduct(@PathVariable Long productId) {
-//
-//    Long userId = (Long) SecurityContextHolder
-//            .getContext()
-//            .getAuthentication()
-//            .getPrincipal();
-//
-//    cartService.minusProduct(userId, productId);
-//}
-//
-//@PostMapping("/remove/{productId}")
-//public void removeProduct(@PathVariable Long productId) {
-//
-//    Long userId = (Long) SecurityContextHolder
-//            .getContext()
-//            .getAuthentication()
-//            .getPrincipal();
-//
-//    cartService.removeProduct(userId, productId);
-//}
-//
-//
-//
-//@GetMapping
-//public Cart getCart() {
-//
-//    Long userId = (Long) SecurityContextHolder
-//            .getContext()
-//            .getAuthentication()
-//            .getPrincipal();
-//
-//    return cartService.getCart(userId);
-//}
 

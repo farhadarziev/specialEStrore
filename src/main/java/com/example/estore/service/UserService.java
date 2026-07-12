@@ -18,7 +18,6 @@ public class UserService {
 
     public User register(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        System.out.println("REGISTER: " + user.getLogin());
         return userRepository.save(user);
     }
 

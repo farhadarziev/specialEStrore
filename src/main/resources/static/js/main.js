@@ -151,14 +151,6 @@ function isAuth() {
     }
 }
 
-window.onload = () => {
-    if (isAuth()) {
-        console.log("Пользователь авторизован");
-    } else {
-        console.log("Гость");
-    }
-};
-
 // searcher
 const mainSearchInput = document.getElementById("mainSearchInput");
 const mainSearchBtn = document.getElementById("mainSearchBtn");

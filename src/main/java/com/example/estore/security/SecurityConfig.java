@@ -2,6 +2,8 @@ package com.example.estore.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,6 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
@@ -32,22 +35,30 @@ public class SecurityConfig {
                                 "/",
                                 "/main.html",
                                 "/auth.html",
+                                "/admin.html",
+                                "/catalog.html",
+                                "/product.html",
+                                "/cart.html",
+                                "/profile.html",
+                                "/order_history.html",
+                                "/about.html",
                                 "/css/**",
                                 "/js/**",
-                                "/images/**"
+                                "/images/**",
+                                "/favicon.ico"
                         ).permitAll()
 
-                        // === AUTH API ===
+                        // auth
                         .requestMatchers("/auth/**").permitAll()
 
-                        // === ПРОДУКТЫ ===
-                        .requestMatchers("/api/products/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
 
-                        // === КОРЗИНА ===
-                        .requestMatchers("/api/cart/**").permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/cart/**").authenticated()
+                        .requestMatchers("/api/orders/**").authenticated()
+                        .requestMatchers("/api/user/**").authenticated()
 
-                        // === ОСТАЛЬНОЕ ===
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(
                         jwtAuthFilter,
