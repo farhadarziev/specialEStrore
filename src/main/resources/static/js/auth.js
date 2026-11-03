@@ -114,13 +114,26 @@ async function submitAuth() {
         if (mode === "login") {
             const data = await res.json();
 
+            if (!data.token || !data.role) {
+                throw new Error("Сервер не вернул данные для входа");
+            }
+
             localStorage.setItem("token", data.token);
             localStorage.setItem("role", data.role);
 
-            const localCart = JSON.parse(localStorage.getItem("cart") || "{}");
-            await replaceServerCartWithLocal(localCart);
 
-            localStorage.removeItem("cart");
+
+            const cartAbortController = new AbortController();
+            const cartTimeoutId = setTimeout(() => cartAbortController.abort(), 8000);
+            try {
+                const localCart = JSON.parse(localStorage.getItem("cart") || "{}");
+                await replaceServerCartWithLocal(localCart, cartAbortController.signal);
+                localStorage.removeItem("cart");
+            } catch (cartError) {
+                console.warn("Не удалось перенести гостевую корзину. Локальная копия сохранена:", cartError);
+            } finally {
+                clearTimeout(cartTimeoutId);
+            }
 
             showNotification("Вы успешно вошли");
 
@@ -147,7 +160,8 @@ async function submitAuth() {
             switchMode();
         }
     } catch (err) {
-        setFormMessage("Ошибка сервера");
+        console.error("Ошибка входа / регистрации:", err);
+        setFormMessage("Не удалось выполнить запрос. Попробуйте ещё раз");
     } finally {
         submitButton.disabled = false;
     }
@@ -181,25 +195,19 @@ function setFormMessage(text = "") {
     formMessage.textContent = text;
 }
 
-async function replaceServerCartWithLocal(localCart) {
+async function replaceServerCartWithLocal(localCart,signal) {
     const entries = Object.entries(localCart);
 
     if (entries.length === 0) {
         return;
     }
 
-    const clearRes = await authFetch("/api/cart", {
-        method: "DELETE"
-    });
-
-    if (!clearRes.ok) {
-        throw new Error("Не удалось очистить серверную корзину");
-    }
+    const headers = { Authorization: `Bearer ${localStorage.getItem("token")}` };
 
     for (const [productId, quantity] of entries) {
         for (let i = 0; i < quantity; i++) {
-            const addRes = await authFetch(`/api/cart/add/${productId}`, {
-                method: "POST"
+            const addRes = await fetch(`/api/cart/add/${productId}`, {
+                method: "POST", headers, signal
             });
 
             if (!addRes.ok) {

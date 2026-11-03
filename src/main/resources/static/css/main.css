@@ -99,17 +99,33 @@ body {
     font-style: italic;
 }
 
+
 /* Контакты и соцсети */
 .contacts {
     text-align: right;
     min-width: 220px;
 }
 
-.contacts p {
-    margin: 0;
-    font-weight: bold;
+.contact-link {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
     color: #222;
+    text-decoration: none;
 }
+
+.contact-link img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.contact-link:hover {
+    color: #0074c2;
+}
+
 
 /* Блок соцсетей */
 .social {
@@ -117,6 +133,20 @@ body {
     justify-content: flex-end;
     gap: 10px;
     margin-top: 5px;
+}
+.social a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.social a img {
+    transition: transform 0.2s ease;
+}
+
+.social a:hover img {
+    transform: scale(1.1);
 }
 
 .social img {
