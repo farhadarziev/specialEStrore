@@ -117,9 +117,23 @@ function addToCart(productId) {
 
     authFetch(`/api/cart/add/${productId}`, {
         method: "POST"
-    }).then(() => {
-        showToast("Товар добавлен в корзину");
-    });
+    })
+        .then(res => {
+            if (res.status === 409) {
+                showToast("Недостаточно товара на складе");
+                return;
+            }
+
+            if (!res.ok) {
+                throw new Error("Ошибка добавления товара");
+            }
+
+            showToast("Товар добавлен в корзину");
+        })
+        .catch(err => {
+            console.error(err);
+            showToast("Не удалось добавить товар");
+        });
 }
 
 
@@ -229,11 +243,25 @@ document.addEventListener("click", e => {
 });
 
 function plus(id) {
-    authFetch(`/api/cart/add/${id}`, {
+    authFetch(`/api/cart/add/${productId}`, {
         method: "POST"
-    }).then(() => {
-        renderCart("cart-items", "cart-total");
-    });
+    })
+        .then(res => {
+            if (res.status === 409) {
+                showToast("Недостаточно товара на складе");
+                return;
+            }
+
+            if (!res.ok) {
+                throw new Error("Ошибка добавления товара");
+            }
+
+            showToast("Товар добавлен в корзину");
+        })
+        .catch(err => {
+            console.error(err);
+            showToast("Не удалось добавить товар");
+        });
 }
 
 

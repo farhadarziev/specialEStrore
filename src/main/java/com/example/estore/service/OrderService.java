@@ -11,6 +11,7 @@ import com.example.estore.entity.User;
 import com.example.estore.mapper.AdminOrderMapper;
 import com.example.estore.mapper.OrderMapper;
 import com.example.estore.repository.OrderRepository;
+import com.example.estore.repository.ProductRepository;
 import com.example.estore.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
@@ -26,13 +27,13 @@ import java.util.List;
 public class OrderService {
 
     private final  CartService cartService;
-    private final ProductService productService;
+    private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
 
-    public OrderService(CartService cartService, ProductService productService, UserRepository userRepository, OrderRepository orderRepository) {
+    public OrderService(CartService cartService, ProductRepository productRepository, UserRepository userRepository, OrderRepository orderRepository) {
         this.cartService = cartService;
-        this.productService = productService;
+        this.productRepository = productRepository;
         this.userRepository = userRepository;
         this.orderRepository = orderRepository;
     }
@@ -56,7 +57,33 @@ public class OrderService {
         int total = 0;
 
         for (CartItem cartItem : cart.getItems()) {
-            Product product = productService.findById(cartItem.getProductId());
+            Product product = productRepository
+                    .findByIdForUpdate(cartItem.getProductId())
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND,
+                            "Product not found"
+                    ));
+
+            int requestedQuantity = cartItem.getQuantity();
+
+            if (requestedQuantity <= 0) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Некорректное количество товара"
+                );
+            }
+
+            if (product.getStockQuantity() < requestedQuantity) {
+                throw new ResponseStatusException(
+                        HttpStatus.CONFLICT,
+                        "Недостаточно товара на складе: " + product.getName()
+                );
+            }
+
+            // Уменьшаем остаток
+            product.setStockQuantity(
+                    product.getStockQuantity() - requestedQuantity
+            );
 
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);

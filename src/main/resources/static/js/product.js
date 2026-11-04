@@ -15,8 +15,17 @@ fetch("/api/products/" + id)
 
         document.getElementById("product-name").innerText = product.name;
         document.getElementById("product-image").src = product.image;
-        document.getElementById("product-price").innerText =
-            product.price + " сом";
+        document.getElementById("product-price").innerText = product.price + " сом";
+
+        const addButton = document.querySelector(".add-to-cart-btn");
+
+        if (product.stockQuantity <= 0) {
+            addButton.disabled = true;
+            addButton.textContent = "Нет в наличии";
+        } else {
+            addButton.disabled = false;
+            addButton.textContent = "В корзину";
+        }
 
 
         document

@@ -5,6 +5,7 @@ import com.example.estore.dto.ProductResponse;
 import com.example.estore.entity.Product;
 import com.example.estore.mapper.ProductMapper;
 import com.example.estore.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -73,10 +74,15 @@ public class ProductService {
         return ProductMapper.toResponse(savedProduct);
     }
 
+    @Transactional
     public ProductResponse update(Long id, ProductRequest request) {
         validateRequest(request);
 
-        Product product = findById(id);
+        Product product = productRepository.findByIdForUpdate(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Product not found"
+                ));
         ProductMapper.updateEntity(product, request);
 
         Product savedProduct = productRepository.save(product);
@@ -106,6 +112,20 @@ public class ProductService {
 
         if (request.getPrice() <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product price must be greater than zero");
+        }
+
+        if (request.getStockQuantity() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Укажите количество товара"
+            );
+        }
+
+        if (request.getStockQuantity() < 0) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Количество товара не может быть отрицательным"
+            );
         }
     }
 }

@@ -202,6 +202,20 @@ document.getElementById("prevBtn").addEventListener("click", () => {
             }
         }
 
+// ====== КНОПКА АДМИН-ПАНЕЛИ ======
+
+const adminPanelLink = document.getElementById("adminPanelLink");
+
+if (adminPanelLink) {
+
+    const role = localStorage.getItem("role");
+
+    if (isAuth() && role === "ADMIN") {
+        adminPanelLink.style.display = "inline-block";
+    }
+
+}
+
 // searcher
         const mainSearchInput = document.getElementById("mainSearchInput");
         const mainSearchBtn = document.getElementById("mainSearchBtn");

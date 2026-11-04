@@ -6,6 +6,7 @@ public class ProductRequest {
     private String category;
     private int price;
     private String image;
+    private Integer stockQuantity;
 
     public ProductRequest() {
     }
@@ -40,5 +41,13 @@ public class ProductRequest {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public Integer getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(Integer stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 }

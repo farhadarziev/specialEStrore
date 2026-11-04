@@ -16,6 +16,7 @@ public class ProductMapper {
         response.setCategory(product.getCategory());
         response.setPrice(product.getPrice());
         response.setImage(product.getImage());
+        response.setStockQuantity(product.getStockQuantity());
         return response;
     }
 
@@ -25,6 +26,7 @@ public class ProductMapper {
         product.setCategory(request.getCategory());
         product.setPrice(request.getPrice());
         product.setImage(request.getImage());
+        product.setStockQuantity(request.getStockQuantity());
         return product;
     }
 
@@ -33,5 +35,6 @@ public class ProductMapper {
         product.setCategory(request.getCategory());
         product.setPrice(request.getPrice());
         product.setImage(request.getImage());
+        product.setStockQuantity(request.getStockQuantity());
     }
 }

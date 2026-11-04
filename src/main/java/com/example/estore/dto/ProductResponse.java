@@ -7,6 +7,7 @@ public class ProductResponse {
     private String category;
     private int price;
     private String image;
+    private int stockQuantity;
 
     public ProductResponse() {
     }
@@ -49,5 +50,13 @@ public class ProductResponse {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public int getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 }

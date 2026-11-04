@@ -108,11 +108,18 @@ function renderProducts(products) {
                 <img src="${p.image}">
                 <h3>${p.name}</h3>
                 <p>${p.price} сом</p>
+                <p>
+                ${p.stockQuantity > 0
+                 ? `В наличии: ${p.stockQuantity} шт.`
+                : "Нет в наличии"}
+                </p>
             </a>
 
-            <button class="add-to-cart-btn" data-id="${p.id}">
-                В корзину
-            </button>
+            <button class="add-to-cart-btn"
+        data-id="${p.id}"
+        ${p.stockQuantity <= 0 ? "disabled" : ""}>
+    ${p.stockQuantity <= 0 ? "Нет в наличии" : "В корзину"}
+</button>
         `;
 
         productsContainer.appendChild(card);

@@ -44,25 +44,44 @@ public class CartService {
         }
         return cart;
     }
+
     @Transactional
     public void addToCart(Long userId, Long productId) {
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Product not found"
+                ));
+
         CartItemEntity item = cartItemRepository
                 .findByUserIdAndProductId(userId, productId)
                 .orElseGet(() -> {
-                    User user = userRepository.findById(userId)
-                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-                    Product product = productRepository.findById(productId)
-                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+                    User user = userRepository.findById(userId)
+                            .orElseThrow(() -> new ResponseStatusException(
+                                    HttpStatus.NOT_FOUND,
+                                    "User not found"
+                            ));
 
                     CartItemEntity newItem = new CartItemEntity();
+
                     newItem.setUser(user);
                     newItem.setProduct(product);
                     newItem.setQuantity(0);
+
                     return newItem;
                 });
 
+        if (item.getQuantity() >= product.getStockQuantity()) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Недостаточно товара на складе"
+            );
+        }
+
         item.setQuantity(item.getQuantity() + 1);
+
         cartItemRepository.save(item);
     }
 
